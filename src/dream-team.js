@@ -18,6 +18,7 @@ function createDreamTeam(members) {
     let teamNameArr = [];
     for (let i = 0; i < members.length; i++) {
         if (typeof(members[i]) == 'string') {
+            members[i] = members[i].replace(/ /ig, '');
             teamNameArr.push(members[i][0].toUpperCase());
         }
     }
