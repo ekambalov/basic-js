@@ -19,14 +19,79 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
-class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+ class VigenereCipheringMachine {
+  constructor(machineIsDirect = true) {
+    this.machineIsDirect = machineIsDirect;
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  encrypt(message, key) {
+    if (message === undefined || key === undefined) throw new Error('Incorrect arguments!');
+
+    let mesUp = message.toUpperCase();
+    let result = '';
+    let letter='';
+    let encryptKey = '';
+    
+    let num = 0;
+
+    for (let i = 0; i < message.length; i++) {
+
+      if (mesUp.charCodeAt(i) > 64 && mesUp.charCodeAt(i) < 91) {
+        encryptKey += key[num % key.length].toUpperCase();
+        num+=1;
+
+      } else {
+        encryptKey += ' ';
+      }
+
+    }
+
+
+    for (let i = 0; i < message.length; i++) {
+      if (mesUp.charCodeAt(i) > 64 && mesUp.charCodeAt(i) < 91) {
+        letter = String.fromCharCode(((mesUp.charCodeAt(i) - 65) + (encryptKey.charCodeAt(i) - 65)) % 26 + 65);
+        result += letter;
+      } else {
+        result += message[i];
+      }
+    }
+
+    if(!this.machineIsDirect) result = result.split('').reverse().join('')
+
+    return result
+  }
+  decrypt(message, key) {
+    if (message === undefined || key === undefined) throw new Error('Incorrect arguments!');
+
+    let encryptedMesUp = message.toUpperCase();
+    let result = '';
+    let letter='';
+    let encryptKey = '';
+
+    let num = 0;
+
+    for (let i = 0; i < encryptedMesUp.length; i++) {
+      if (encryptedMesUp.charCodeAt(i) > 64 && encryptedMesUp.charCodeAt(i) < 91) {
+        encryptKey += key[num % key.length].toUpperCase();
+        num+=1;
+      } else {
+        encryptKey += ' ';
+      }
+    }
+
+    for (let i = 0; i < encryptedMesUp.length; i++) {
+      if (encryptedMesUp.charCodeAt(i) >= 65 && encryptedMesUp.charCodeAt(i) <= 90) {
+        letter = String.fromCharCode(((encryptedMesUp.charCodeAt(i) - 65) - (encryptKey.charCodeAt(i) - 65) + 26) % 26 + 65);
+        result += letter;
+      } else {
+        result += message[i];
+      }
+    }
+
+    if(!this.machineIsDirect) result = result.split('').reverse().join('')
+
+    return result
+
   }
 }
 
